@@ -25,12 +25,13 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
-Cypress.Commands.add('login', (email = '', password = '') => {
+Cypress.Commands.add('login', (email, password) => {
     cy.visit('https://demo.evershop.io/account/login');
     cy.url().should('include', '/account/login');
 
     // Type email (explicitly type an empty string if passed)
     cy.get('input[name="email"]').clear().type(email);
+    //TODO do we need to clear ?
 
     // Type password (explicitly type an empty string if passed)
     cy.get('input[name="password"]').clear().type(password);
