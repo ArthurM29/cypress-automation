@@ -41,11 +41,16 @@ Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.get('button[type="submit"]').click();
 });
 
-Cypress.Commands.add('getFieldErrorContainer', (fieldName: string) => {
+Cypress.Commands.add('assertFieldErrorIsDisplayed', (fieldName: string, expectedErrorMsg: string) => {
     fieldName = fieldName.toLowerCase();
     if (!(['email', 'password'].includes(fieldName))) {
         throw new Error(`Invalid field received: ${fieldName}`);
     }
 
-   return cy.get(`input[name="${fieldName}"]`).parents('.form-field-container').find('.field-error').as(`${fieldName}-error-msg`);
+    cy.get(`input[name="${fieldName}"]`).parents('.form-field-container').find('.field-error')
+        .within(() => {
+            cy.get('span').as(`${fieldName}-error-msg`).should('be.visible').and('have.text', expectedErrorMsg);
+            cy.get('svg').as(`${fieldName}-error-icon`).should('be.visible');
+        });
 });
+

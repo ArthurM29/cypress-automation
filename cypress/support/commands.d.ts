@@ -11,6 +11,6 @@ declare namespace Cypress {
          * Custom command to get the field error container by field name.
          * @example cy.getFieldErrorContainer('email')
          */
-        getFieldErrorContainer(fieldName: string): Chainable<JQuery<HTMLElement>>
+        assertFieldErrorIsDisplayed(fieldName: string, expectedErrorMsg: string): Chainable<JQuery<HTMLElement>>
     }
 }

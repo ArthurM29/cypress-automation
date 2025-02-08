@@ -10,41 +10,33 @@ describe('Login', () => {
         cy.get('@blue-banner').should('be.visible');
     });
 
-    describe.only('Empty credentials', () => {
-        it('should display an error message when email is left blank', () => {
+    describe('Empty credentials', () => {
+        it('should display an error message when trying to login with empty email', () => {
             cy.login('', user.password);
 
             cy.get('form#loginForm').should('be.visible');
-            cy.getFieldErrorContainer('email')
-                .should('be.visible')
-                .and('have.text', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('email', 'This field can not be empty' );
         });
 
-        it('should display an error message when password is left blank', () => {
+        it('should display an error message when trying to login with empty password', () => {
             cy.login(user.email, '');
 
             cy.get('form#loginForm').should('be.visible');
-            cy.getFieldErrorContainer('password')
-                .should('be.visible')
-                .and('have.text', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('password', 'This field can not be empty' );
         });
 
-        it('should display error messages for both email/password fields when attempting to log in with both fields empty', () => {
+        it('should display error messages for both email/password fields when trying to log in with both fields empty', () => {
             cy.login('', '');
 
             cy.get('form#loginForm').should('be.visible');
-            cy.getFieldErrorContainer('email')
-                .should('be.visible')
-                .and('have.text', 'This field can not be empty');
-            cy.getFieldErrorContainer('password')
-                .should('be.visible')
-                .and('have.text', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('email', 'This field can not be empty' );
+            cy.assertFieldErrorIsDisplayed('password', 'This field can not be empty' );
         });
     })
 
     describe("Invalid credentials", () => {
 
-        it('email with invalid format is rejected', () => {
+        it('should display an error message when attempting to log in with an incorrectly formatted email address', () => {
             cy.login('invalidgmail.com', user.password);
 
             cy.get('form#loginForm').should('be.visible');
