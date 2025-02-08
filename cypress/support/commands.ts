@@ -31,12 +31,12 @@ Cypress.Commands.add('login', (email: string, password: string) => {
     cy.visit('https://demo.evershop.io/account/login');
     cy.url().should('include', '/account/login');
 
-    // Clear and type the email
-    cy.get('input[name="email"]').clear().type(email);
+    if (email) {
+        cy.get('input[name="email"]').type(email);
+    }
+    if (password) {
+        cy.get('input[name="password"]').type(password);
+    }
 
-    // Clear and type the password
-    cy.get('input[name="password"]').clear().type(password);
-
-    // Submit the form
     cy.get('button[type="submit"]').click();
 });
