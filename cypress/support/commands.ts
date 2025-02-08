@@ -27,7 +27,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
-Cypress.Commands.add('login', (email: string, password: string) => {
+Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.visit('https://demo.evershop.io/account/login');
     cy.url().should('include', '/account/login');
 
@@ -39,4 +39,13 @@ Cypress.Commands.add('login', (email: string, password: string) => {
     }
 
     cy.get('button[type="submit"]').click();
+});
+
+Cypress.Commands.add('getFieldErrorContainer', (fieldName: string) => {
+    fieldName = fieldName.toLowerCase();
+    if (!(['email', 'password'].includes(fieldName))) {
+        throw new Error(`Invalid field received: ${fieldName}`);
+    }
+
+   return cy.get(`input[name="${fieldName}"]`).parents('.form-field-container').find('.field-error').as(`${fieldName}-error-msg`);
 });

@@ -6,5 +6,11 @@ declare namespace Cypress {
          * @param password - The password to use for login.
          */
         login(email: string, password: string): Chainable<Subject>;
+
+        /**
+         * Custom command to get the field error container by field name.
+         * @example cy.getFieldErrorContainer('email')
+         */
+        getFieldErrorContainer(fieldName: string): Chainable<JQuery<HTMLElement>>
     }
 }
