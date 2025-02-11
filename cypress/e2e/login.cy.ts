@@ -1,23 +1,33 @@
 import {user} from "../../data";
 
-describe('Login', () => {
 
-    describe('Valid login', () => {
-        it('should allow a user to sign in with valid credentials', () => {
-            cy.login(user.email, user.password);
+describe('Valid login', () => {
+    beforeEach(() => {
+        cy.visit('https://demo.evershop.io/');
+        cy.get('a[href*="account"]').as('account-icon').click();
+    })
 
-            cy.url().should('include', '/');
-            cy.get('main > div:nth-child(1) .prose').as('blue-banner');
-            cy.get('@blue-banner').should('be.visible');
-        });
+    it.only('should allow a user to sign in with valid credentials', () => {
+        cy.login(user.email, user.password);
+        cy.get('main > div:nth-child(1) .prose').as('blue-banner').should('be.visible');
+        cy.get('a[href*="account"]').as('account-icon').click();
 
-        it('should allow a user to sign in with case-insensitive email', () => {
-            cy.login(user.email.toUpperCase(), user.password);
+        cy.contains('My Account').should('be.visible');
+        cy.get('a.text-interactive').contains('Logout').should('be.visible');
+    });
 
-            cy.url().should('include', '/');
-            cy.get('main > div:nth-child(1) .prose').as('blue-banner');
-            cy.get('@blue-banner').should('be.visible');
-        });
+    it('should allow a user to sign in with case-insensitive email', () => {
+        cy.login(user.email.toUpperCase(), user.password);
+
+        cy.url().should('include', '/');
+        cy.get('main > div:nth-child(1) .prose').as('blue-banner');
+        cy.get('@blue-banner').should('be.visible');
+    });
+})
+
+describe('Negative scenarios', () => {
+    beforeEach(() => {
+        cy.visit('https://demo.evershop.io/account/login');
     })
 
     describe('Empty credentials', () => {
@@ -80,5 +90,5 @@ describe('Login', () => {
                 .should('be.visible')
                 .and('have.text', 'Invalid email or password');
         });
-    })
+    });
 })

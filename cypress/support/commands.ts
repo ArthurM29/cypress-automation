@@ -28,7 +28,6 @@
 
 
 Cypress.Commands.add('login', (email: string, password: string): void => {
-    cy.visit('https://demo.evershop.io/account/login');
     cy.url().should('include', '/account/login');
 
     if (email) {
