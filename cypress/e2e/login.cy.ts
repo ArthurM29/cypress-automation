@@ -7,13 +7,27 @@ describe('Valid login', () => {
         cy.get('a[href*="account"]').as('account-icon').click();
     })
 
-    it.only('should allow a user to sign in with valid credentials', () => {
+    it('should allow a user to sign in with valid credentials', () => {
         cy.login(user.email, user.password);
         cy.get('main > div:nth-child(1) .prose').as('blue-banner').should('be.visible');
         cy.get('a[href*="account"]').as('account-icon').click();
 
         cy.contains('My Account').should('be.visible');
         cy.get('a.text-interactive').contains('Logout').should('be.visible');
+    });
+
+    it('should set the cookie after a successful login ', () => {
+        cy.login(user.email, user.password);
+        cy.get('main > div:nth-child(1) .prose').as('blue-banner').should('be.visible');
+        cy.get('a[href*="account"]').as('account-icon').click();
+
+        cy.contains('My Account').should('be.visible');
+        cy.get('a.text-interactive').contains('Logout').should('be.visible');
+
+        // our auth cookie should be present
+        cy.getCookie('sid').should('exist');
+        cy.getCookie('sid').its('domain').should('equal', 'demo.evershop.io');
+        cy.getCookie('sid').its('value').should('not.be.empty');
     });
 
     it('should allow a user to sign in with case-insensitive email', () => {
