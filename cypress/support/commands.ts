@@ -40,6 +40,21 @@ Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.get('button[type="submit"]').click();
 });
 
+Cypress.Commands.add('loginWithSession', (email: string, password: string): void => {
+    cy.session(
+        email,
+        () => {
+            cy.visit('https://demo.evershop.io/account/login');
+            cy.login(email, password);
+        },
+        {
+            validate: () => {
+                cy.getCookie('sid').should('exist');
+            },
+        }
+    )
+});
+
 Cypress.Commands.add('assertFieldErrorIsDisplayed', (fieldName: string, expectedErrorMsg: string) => {
     fieldName = fieldName.toLowerCase();
     if (!(['email', 'password'].includes(fieldName))) {
