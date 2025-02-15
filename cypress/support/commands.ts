@@ -27,6 +27,8 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
+import {Address} from '../data';
+
 Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.url().should('include', '/account/login');
 
@@ -55,16 +57,35 @@ Cypress.Commands.add('loginWithSession', (email: string, password: string): void
     )
 });
 
-Cypress.Commands.add('assertFieldErrorIsDisplayed', (fieldName: string, expectedErrorMsg: string) => {
-    fieldName = fieldName.toLowerCase();
-    if (!(['email', 'password'].includes(fieldName))) {
-        throw new Error(`Invalid field received: ${fieldName}`);
-    }
-
-    cy.get(`input[name="${fieldName}"]`).parents('.form-field-container').find('.field-error')
+Cypress.Commands.add('assertFieldErrorIsDisplayed', (locator: string, expectedErrorMsg: string): void => {
+    cy.get(locator).parents('.form-field-container').find('.field-error')
         .within(() => {
-            cy.get('span').as(`${fieldName}-error-msg`).should('be.visible').and('have.text', expectedErrorMsg);
-            cy.get('svg').as(`${fieldName}-error-icon`).should('be.visible');
+            cy.get('span').as(`${locator}-error-msg`).should('be.visible').and('have.text', expectedErrorMsg);
+            cy.get('svg').as(`${locator}-error-icon`).should('be.visible');
         });
 });
 
+Cypress.Commands.add('fillOutAddressForm', (address: Partial<Address>): void => {
+    if (address.fullname) {
+        cy.get('input[name="address[full_name]"]').type(address.fullname);
+    }
+    if (address.telephone) {
+        cy.get('input[name="address[telephone]"]').type(address.telephone);
+    }
+    if (address.address) {
+        cy.get('input[name="address[address_1]"]').type(address.address);
+    }
+    if (address.city) {
+        cy.get('input[name="address[city]"]').type(address.city);
+    }
+    if (address.country) {
+        cy.get('select[name="address[country]"]').select(address.country);
+
+        if (address.province) {
+            cy.get('select[name="address[province]"]').select(address.province);
+        }
+    }
+    if (address.postcode) {
+        cy.get('input[name="address[postcode]"]').type(address.postcode);
+    }
+});

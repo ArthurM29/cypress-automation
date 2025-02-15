@@ -1,4 +1,4 @@
-import {user} from "../../data";
+import {user} from "../data";
 
 beforeEach(() => {
     cy.visit('https://demo.evershop.io/account/login');

@@ -1,3 +1,5 @@
+import {Address} from '../data';
+
 declare namespace Cypress {
     interface Chainable<Subject = any> {
         /**
@@ -16,9 +18,31 @@ declare namespace Cypress {
         loginWithSession(email: string, password: string): Chainable<Subject>;
 
         /**
-         * Custom command to get the field error container by field name.
-         * @example cy.getFieldErrorContainer('email')
+         * Custom command to assert if a field error message and icon are displayed correctly.
+         * This function assumes there is a structured way to access error messages in the DOM,
+         * typically involving a parent container with a specific class and child elements for text and icons.
+         * @param locator The CSS selector for the input field related to the error.
+         * @param expectedErrorMsg The expected text of the error message to be validated.
+         * @example
+         * cy.assertFieldErrorIsDisplayed('input[name="email"]', 'Email is required');
          */
-        assertFieldErrorIsDisplayed(fieldName: string, expectedErrorMsg: string): Chainable<JQuery<HTMLElement>>
+        assertFieldErrorIsDisplayed(locator: string, expectedErrorMsg: string): Chainable<Subject>;
+
+        /**
+         * Custom command to comprehensively fill out an address form with the provided data.
+         * It targets designated fields within the form and inputs the corresponding values from the data object.
+         * Fields not mentioned in the data object are skipped, allowing for partial form completion.
+         * @param data An object containing optional fields of the form with values to be entered.
+         * @example
+         *  cy.fillOutAddressForm({
+         *      fullname: 'John Doe',
+         *      telephone: '(555) 123-4567',
+         *      address: '1500 Pennsylvania Avenue NW',
+         *      city: 'Austin',
+         *      country: 'United States',
+         *      postcode: '20500'
+         *  });
+         */
+        fillOutAddressForm(data: Address): Chainable<void>;
     }
 }

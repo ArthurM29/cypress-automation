@@ -1,4 +1,4 @@
-import {user} from "../../data";
+import {user} from "../data";
 
 
 describe('Valid login', () => {
@@ -49,22 +49,22 @@ describe('Negative scenarios', () => {
             cy.login('', user.password);
 
             cy.get('form#loginForm').should('be.visible');
-            cy.assertFieldErrorIsDisplayed('email', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('input[name="email"]', 'This field can not be empty');
         });
 
         it('should display an error message when trying to login with empty password', () => {
             cy.login(user.email, '');
 
             cy.get('form#loginForm').should('be.visible');
-            cy.assertFieldErrorIsDisplayed('password', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('input[name="password"]', 'This field can not be empty');
         });
 
         it('should display error messages for both email/password fields when trying to log in with both fields empty', () => {
             cy.login('', '');
 
             cy.get('form#loginForm').should('be.visible');
-            cy.assertFieldErrorIsDisplayed('email', 'This field can not be empty');
-            cy.assertFieldErrorIsDisplayed('password', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('input[name="email"]', 'This field can not be empty');
+            cy.assertFieldErrorIsDisplayed('input[name="password"]', 'This field can not be empty');
         });
     })
 
@@ -73,7 +73,7 @@ describe('Negative scenarios', () => {
             cy.login('incorrectgmail.com', user.password);
 
             cy.get('form#loginForm').should('be.visible');
-            cy.assertFieldErrorIsDisplayed('email', 'Invalid email');
+            cy.assertFieldErrorIsDisplayed('input[name="email"]', 'Invalid email');
         });
     })
 
