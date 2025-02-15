@@ -39,6 +39,8 @@ describe('Address form required fields', () => {
 
 
 it('should not all to create an address without populating all the fields', () => {
+    //TODO add teardown step to delete the created address
+
     user.address.fullname = `user.address.fullname_${faker.string.alpha(5)}`;
     cy.fillOutAddressForm(user.address);
     cy.get('.button.primary').click();

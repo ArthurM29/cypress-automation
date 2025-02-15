@@ -1,4 +1,4 @@
-import { Address } from '../data';
+import {Address} from '../data';
 
 declare global {
     namespace Cypress {
@@ -42,7 +42,7 @@ declare global {
              *      postcode: '20500'
              * })
              */
-            fillOutAddressForm(data: Address): Chainable<void>;
+            fillOutAddressForm(data: Partial<Address>): Chainable<void>;
         }
     }
 }
