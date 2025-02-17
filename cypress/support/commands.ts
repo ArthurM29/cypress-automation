@@ -28,6 +28,7 @@
 
 
 import {Address} from '../data';
+import Chainable = Cypress.Chainable;
 
 Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.url().should('include', '/account/login');
@@ -89,3 +90,50 @@ Cypress.Commands.add('fillOutAddressForm', (address: Partial<Address>): void => 
         cy.get('input[name="address[postcode]"]').type(address.postcode);
     }
 });
+
+Cypress.Commands.add('getShippingAddresses', (): Chainable<Address[]> => {
+    const addressesData: Address[] = [];
+
+    return cy.get('.address__summary').each(($address) => {
+        let addressData = {} as Address;
+
+        return cy.wrap($address).within(() => {
+            cy.get('.full-name').invoke('text').then(fullname => {
+                addressData.fullname = fullname;
+            });
+
+            cy.get('.telephone').invoke('text').then(telephone => {
+                addressData.telephone = telephone;
+            });
+
+            cy.get('.city-province-postcode').within(() => {
+                cy.get('div').eq(0).invoke('text').then(postcodeCityTxt => {
+                    const [postcode, city] = postcodeCityTxt.split(',').map(value => value.trim());
+                    addressData.postcode = postcode;
+                    addressData.city = city;
+                });
+
+                cy.get('div').eq(1).invoke('text').then(provinceCountryTxt => {
+                    const [province, country] = provinceCountryTxt.split(',').map(value => value.trim());
+                    addressData.province = province;
+                    addressData.country = country;
+                });
+            });
+
+            cy.get('.address-one').invoke('text').then(address => {
+                addressData.address = address;
+            });
+        }).then(() => {
+            addressesData.push(addressData);
+        });
+    }).then(() => {
+        return addressesData;
+    });
+});
+
+
+
+
+
+
+

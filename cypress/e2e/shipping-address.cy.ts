@@ -1,6 +1,6 @@
-import {user} from "../data";
+import {Address, user} from "../data";
 import {removeObjectKeys} from "../utils";
-import { faker } from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 
 beforeEach(() => {
     cy.loginWithSession(user.email, user.password);
@@ -10,8 +10,7 @@ beforeEach(() => {
 })
 
 
-describe('Address form required fields', () => {
-
+describe('Required fields', () => {
     interface AddressFieldData {
         field: string;
         locator: string;
@@ -37,16 +36,51 @@ describe('Address form required fields', () => {
     });
 });
 
+describe('Cancel', () => {
+    const expectedAddress = {
+        ...user.address,
+        fullname: `${user.address.fullname}_${faker.string.alpha(5)}`
+    };
 
-it('should not all to create an address without populating all the fields', () => {
-    //TODO add teardown step to delete the created address
+    it('should cancel address creation if user clicks \'Close\' after entering data', () => {
+        cy.fillOutAddressForm(expectedAddress);
+        cy.contains('Close').click();
 
-    user.address.fullname = `user.address.fullname_${faker.string.alpha(5)}`;
-    cy.fillOutAddressForm(user.address);
-    cy.get('.button.primary').click();
+        cy.get('.modal').as('Edit Address screen').should('not.exist');
+        cy.get('.order-history-empty').should('have.text', 'You have no addresses saved');
+    });
+})
 
-    cy.get('.Toastify__toast-body').should('be.visible').and('have.text', 'Address has been saved successfully!');
-    cy.get('.Toastify__toast-body', { timeout: 10000 }).should('not.exist');
-});
+describe('Create new Address', () => {
+    const expectedAddress = {
+        ...user.address,
+        fullname: `${user.address.fullname}_${faker.string.alpha(5)}`
+    };
+
+    afterEach(() => {
+        // delete created shipping address
+        cy.contains(expectedAddress.fullname).closest('.border.rounded').contains('Delete').click();
+    })
+
+    it('should be able to create a new address with all populated fields stored correctly', () => {
+        cy.fillOutAddressForm(expectedAddress);
+        cy.get('.button.primary').click();
+
+        cy.get('.Toastify__toast-body').should('be.visible').and('have.text', 'Address has been saved successfully!');
+        cy.get('.Toastify__toast-body', {timeout: 10000}).should('not.exist');
+
+        cy.getShippingAddresses().then((shippingAddresses: Address[]) => {
+            cy.wrap(shippingAddresses).should('have.length', 1);
+            const createdAddress = shippingAddresses.find(address =>
+                address.fullname.toLowerCase() === expectedAddress.fullname.toLocaleLowerCase());
+
+            cy.wrap(createdAddress).should((address) => {
+                expect(address).to.deep.equal(expectedAddress);
+            });
+        });
+    });
+})
+
+
 
 

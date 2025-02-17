@@ -43,6 +43,17 @@ declare global {
              * })
              */
             fillOutAddressForm(data: Partial<Address>): Chainable<void>;
+
+            /**
+             * Custom command to fetch addresses from the page.
+             * This command iterates over elements with the class '.address__summary',
+             * extracting details such as full name, telephone, address, city, postcode, province, and country,
+             * and collects them into an array of Address objects.
+             * @example cy.getAddresses().then((addresses) => {
+             *   // addresses is now an array of Address objects
+             * })
+             */
+            getShippingAddresses(): Chainable<Array<Address>>;
         }
     }
 }
