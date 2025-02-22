@@ -2,15 +2,13 @@ import Chainable = Cypress.Chainable;
 
 export class LoginPage {
 
-    // elements
+    // =======================================
+    // Elements
+    // =======================================
     static emailInput = (): Chainable<JQuery<HTMLInputElement>> => cy.get('input[name="email"]');
-
     static passwordInput = (): Chainable<JQuery<HTMLInputElement>> => cy.get('input[name="password"]');
-
     static signInButton = (): Chainable<JQuery<HTMLButtonElement>> => cy.get('button[type="submit"]');
-
     static loginForm = (): Chainable<JQuery<HTMLFormElement>> => cy.get('form#loginForm');
-
     static invalidCredentialsError = (): Chainable<JQuery<HTMLDivElement>> => cy.get('.login-form-inner .text-critical');
 
     static emailInputErrorContainer = (): Chainable<JQuery<HTMLDivElement>> => {
@@ -21,7 +19,9 @@ export class LoginPage {
         return LoginPage.passwordInput().parents('.form-field-container').find('.field-error');
     }
 
-    // methods
+    // =======================================
+    // Actions
+    // =======================================
     static visit = (): void => {
         cy.visit('https://demo.evershop.io/account/login');
     }
