@@ -1,4 +1,5 @@
 import {Address} from '../data';
+import {SearchResults} from "../interfaces";
 
 declare global {
     namespace Cypress {
@@ -54,6 +55,25 @@ declare global {
              * })
              */
             getShippingAddresses(): Chainable<Array<Address>>;
+
+            /**
+             * Custom command to retrieve search results from the page.
+             * This command fetches listings from the page and constructs an array of SearchResults,
+             * each containing name, price, and thumbnail link of a product.
+             * @example cy.getSearchResults().then((results) => {
+             *   // results is now an array of SearchResults
+             * })
+             */
+            getSearchResults(): Chainable<SearchResults[]>;
+
+            /**
+             * Custom command to filter products by size on the UI.
+             * This command finds the 'Size' label, navigates to the corresponding filter options list,
+             * and clicks on the link that matches the provided size.
+             * @param size - The product size to filter by (e.g., 'S', 'M', 'L').
+             * @example cy.filterProductsBySize('L')
+             */
+            filterProductsBySize(size: string[]): Chainable<void>;
         }
     }
 }

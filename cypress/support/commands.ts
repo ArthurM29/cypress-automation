@@ -29,6 +29,7 @@
 
 import {Address} from '../data';
 import Chainable = Cypress.Chainable;
+import {SearchResults} from '../interfaces';
 
 Cypress.Commands.add('login', (email: string, password: string): void => {
     cy.url().should('include', '/account/login');
@@ -128,6 +129,41 @@ Cypress.Commands.add('getShippingAddresses', (): Chainable<Address[]> => {
         });
     }).then(() => {
         return addressesData;
+    });
+});
+
+Cypress.Commands.add('filterProductsBySize', (sizes: string[]): void => {
+    sizes.forEach(size => {
+        cy.contains('span', 'Size').parent().next('.filter-option-list').contains('span', size).click();
+        cy.wait(300); //TODO when the click happens fast, only one size is checked, find a way to wait without hard sleep
+    });
+});
+
+
+Cypress.Commands.add('getSearchResults', (): Chainable<SearchResults[]> => {
+    const products: SearchResults[] = [];
+
+    return cy.get('.listing-tem').each(($product) => {
+        let product = {} as SearchResults;
+
+        return cy.wrap($product).within(() => {
+            cy.get('.product-name').invoke('text').then(name => {
+                product.name = name;
+            });
+
+            cy.get('.product-price-listing').invoke('text').then(price => {
+                product.price = price;
+            });
+
+            cy.get('.product-thumbnail-listing img').invoke('attr', 'src').then(thumbnailLink => {
+                product.thumbnailLink = thumbnailLink;
+            });
+
+        }).then(() => {
+            products.push(product);
+        });
+    }).then(() => {
+        return products;
     });
 });
 
