@@ -31,40 +31,12 @@ import {Address} from '../data';
 import Chainable = Cypress.Chainable;
 import {SearchResults} from '../interfaces';
 
-Cypress.Commands.add('login', (email: string, password: string): void => {
-    cy.url().should('include', '/account/login');
 
-    if (email) {
-        cy.get('input[name="email"]').type(email);
-    }
-    if (password) {
-        cy.get('input[name="password"]').type(password);
-    }
-
-    cy.get('button[type="submit"]').click();
-});
-
-Cypress.Commands.add('loginWithSession', (email: string, password: string): void => {
-    cy.session(
-        email,
-        () => {
-            cy.visit('https://demo.evershop.io/account/login');
-            cy.login(email, password);
-        },
-        {
-            validate: () => {
-                cy.getCookie('sid').should('exist');
-            },
-        }
-    )
-});
-
-Cypress.Commands.add('assertFieldErrorIsDisplayed', (locator: string, expectedErrorMsg: string): void => {
-    cy.get(locator).parents('.form-field-container').find('.field-error')
-        .within(() => {
-            cy.get('span').as(`${locator}-error-msg`).should('be.visible').and('have.text', expectedErrorMsg);
-            cy.get('svg').as(`${locator}-error-icon`).should('be.visible');
-        });
+Cypress.Commands.add('assertFieldErrorIsDisplayed', (errorContainer: Chainable<JQuery<HTMLElement>>, expectedErrorMsg: string): void => {
+    errorContainer.within(() => {
+        cy.get('span').should('be.visible').and('have.text', expectedErrorMsg);
+        cy.get('svg').should('be.visible');
+    });
 });
 
 Cypress.Commands.add('fillOutAddressForm', (address: Partial<Address>): void => {
