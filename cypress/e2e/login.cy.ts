@@ -1,31 +1,31 @@
 import {user} from "../data";
 import {LoginPage} from "../pages/LoginPage";
 import {Header} from "../pages/Header";
-import {HomePage} from "../pages/HomePage";
+import {LandingPage} from "../pages/LandingPage";
 import {MyAccountPage} from "../pages/MyAccountPage";
 
 
 describe('Valid login', () => {
     beforeEach(() => {
-        HomePage.visit();
-        Header.clickMyAccountIcon();
+        LandingPage.visit();
+        Header.visitMyAccount();
     })
 
     it('should allow a user to sign in with valid credentials', () => {
         LoginPage.login(user.email, user.password);
 
         //TODO this is to make sure it has switched from Login screen to Home page and clicks MyAccount from the state
-        HomePage.blueBanner().should('be.visible');
-        Header.clickMyAccountIcon();
-        MyAccountPage.logoutButton().contains('Logout').should('be.visible');
+        LandingPage.shouldBeVisible();
+        Header.visitMyAccount();
+        MyAccountPage.logoutButton().should('be.visible');
     });
 
     it('should set the cookie after a successful login ', () => {
         LoginPage.login(user.email, user.password);
-        HomePage.blueBanner().should('be.visible');
+        LandingPage.blueBanner().should('be.visible');
 
-        Header.clickMyAccountIcon();
-        MyAccountPage.logoutButton().contains('Logout').should('be.visible');
+        Header.visitMyAccount();
+        MyAccountPage.logoutButton().should('be.visible');
 
         // our auth cookie should be present
         cy.getCookie('sid').should('exist');
@@ -36,7 +36,7 @@ describe('Valid login', () => {
     it('should allow a user to sign in with case-insensitive email', () => {
         LoginPage.login(user.email.toUpperCase(), user.password);
 
-        HomePage.blueBanner().should('be.visible');
+        LandingPage.blueBanner().should('be.visible');
     });
 })
 

@@ -4,7 +4,7 @@ export class Header {
 
     static myAccountIcon = (): Chainable<JQuery<HTMLAnchorElement>> => cy.get('.self-center > a[href*="account"]');
 
-    static clickMyAccountIcon = (): void => {
+    static visitMyAccount = (): void => {
         Header.myAccountIcon().click();
     }
 }

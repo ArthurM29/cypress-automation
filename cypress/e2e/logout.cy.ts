@@ -1,15 +1,20 @@
 import {user} from "../data";
+import {LoginPage} from "../pages/LoginPage";
+import {LandingPage} from "../pages/LandingPage";
+import {Header} from "../pages/Header";
+import {MyAccountPage} from "../pages/MyAccountPage";
 
 beforeEach(() => {
-    cy.visit('https://demo.evershop.io/account/login');
-    cy.login(user.email, user.password);
-    cy.get('main > div:nth-child(1) .prose').as('blue-banner').should('be.visible');
+    LoginPage.visit();
+    LoginPage.login(user.email, user.password);
+    LandingPage.shouldBeVisible();
+    Header.visitMyAccount();
 })
 
+
 it('should be able to logout user', () => {
-    cy.get('a[href*="account"]').as('account-icon').click();
-    cy.contains('Logout').click();
-    cy.get('main > div:nth-child(1) .prose').as('blue-banner').should('be.visible');
-    cy.get('a[href*="account"]').as('account-icon').click();
-    cy.get('.login-form').should('be.visible');
-});
+    MyAccountPage.logout();
+
+    Header.visitMyAccount();
+    LoginPage.shouldBeVisible();
+}); 

@@ -1,10 +1,14 @@
 import Chainable = Cypress.Chainable;
 
-export class HomePage {
+export class LandingPage {
 
     static blueBanner = (): Chainable<JQuery<HTMLDivElement>> => cy.get('main > div:nth-child(1) .prose');
 
     static visit = (): void => {
         cy.visit('https://demo.evershop.io/');
+    }
+
+    static shouldBeVisible(): void {
+        LandingPage.blueBanner().should('be.visible');
     }
 }
