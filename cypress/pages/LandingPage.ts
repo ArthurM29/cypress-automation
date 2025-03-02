@@ -5,7 +5,7 @@ export class LandingPage {
     static blueBanner = (): Chainable<JQuery<HTMLDivElement>> => cy.get('main > div:nth-child(1) .prose');
 
     static visit = (): void => {
-        cy.visit('https://demo.evershop.io/');
+        cy.visit('/');
     }
 
     static shouldBeVisible(): void {

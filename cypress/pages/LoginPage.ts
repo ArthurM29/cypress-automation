@@ -23,7 +23,7 @@ export class LoginPage {
     // Actions
     // =======================================
     static visit = (): void => {
-        cy.visit('https://demo.evershop.io/account/login');
+        cy.visit('/account/login');
     }
 
     static shouldBeVisible(): void {

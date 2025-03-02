@@ -1,6 +1,6 @@
 
 beforeEach(() => {
-    cy.visit('https://demo.evershop.io/');
+    cy.visit('/');
     cy.contains('Shop men').click();
 })
 

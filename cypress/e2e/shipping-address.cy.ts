@@ -4,7 +4,7 @@ import {faker} from '@faker-js/faker';
 
 beforeEach(() => {
     cy.loginWithSession(user.email, user.password);
-    cy.visit('https://demo.evershop.io/account');
+    cy.visit('/account');
     cy.get('a[href*="account"]').as('account-icon').click();
     cy.contains('Add new address').click();
 })
