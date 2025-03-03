@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx cypress open --e2e --browser chrome",
-    "run:all:tests": "npx cypress run --headed"
+    "cypress:open": "npx cypress open --e2e --browser chrome",
+    "run:all:tests": "npx cypress run --headed",
+    "run:cypress:cloud": "npx cypress run --record --key 99c9b04f-47a8-466d-9852-e2db528667aa"
   },
   "keywords": [],
   "author": "",

@@ -6,29 +6,13 @@ declare global {
         interface Chainable<Subject = any> {
 
             /**
-             * Custom command to assert if a field error message and icon are displayed correctly.
-             * Assumes a structured way to access error messages in the DOM, involving a parent container and child elements for text and icons.
-             * @param locator - The CSS selector for the input field related to the error.
-             * @param expectedErrorMsg - The expected text of the error message.
-             * @example cy.assertFieldErrorIsDisplayed('input[name="email"]', 'Email is required')
+             * Custom command to assert that an input field displays a specific error message.
+             * This command should be chained to an input field element and will find the related error container,
+             * then verify that the error message matches and the error icon is visible.
+             * @param expectedErrorMsg - The exact error message text that should be displayed.
+             * @example LoginPage.emailInput().shouldDisplayFieldError('Email is required')
              */
-            assertFieldErrorIsDisplayed(locator: Chainable<JQuery<HTMLElement>>, expectedErrorMsg: string): Chainable<Subject>;
-
-            /**
-             * Custom command to comprehensively fill out an address form with the provided data.
-             * Targets designated fields within the form and inputs corresponding values from the data object.
-             * Allows for partial form completion if not all data is provided.
-             * @param data - Object containing fields of the form with values to be entered.
-             * @example cy.fillOutAddressForm({
-             *      fullname: 'John Doe',
-             *      telephone: '(555) 123-4567',
-             *      address: '1500 Pennsylvania Avenue NW',
-             *      city: 'Austin',
-             *      country: 'United States',
-             *      postcode: '20500'
-             * })
-             */
-            fillOutAddressForm(data: Partial<Address>): Chainable<void>;
+            shouldDisplayInputError(expectedErrorMsg: string): Chainable<Subject>;
 
             /**
              * Custom command to fetch addresses from the page.

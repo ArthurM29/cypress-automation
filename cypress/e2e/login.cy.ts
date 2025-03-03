@@ -50,22 +50,22 @@ describe('Negative scenarios', () => {
             LoginPage.login('', user.password);
 
             LoginPage.loginForm().should('be.visible');
-            cy.assertFieldErrorIsDisplayed(LoginPage.emailInputErrorContainer(), 'This field can not be empty');
+            LoginPage.emailInput().shouldDisplayInputError('This field can not be empty');
         });
 
         it('should display an error message when trying to login with empty password', () => {
             LoginPage.login(user.email, '');
 
             LoginPage.loginForm().should('be.visible');
-            cy.assertFieldErrorIsDisplayed(LoginPage.passwordInputErrorContainer(), 'This field can not be empty');
+            LoginPage.passwordInputErrorContainer().shouldDisplayInputError('This field can not be empty');
         });
 
         it('should display error messages for both email/password fields when trying to log in with both fields empty', () => {
             LoginPage.login('', '');
 
             LoginPage.loginForm().should('be.visible');
-            cy.assertFieldErrorIsDisplayed(LoginPage.emailInputErrorContainer(), 'This field can not be empty');
-            cy.assertFieldErrorIsDisplayed(LoginPage.passwordInputErrorContainer(), 'This field can not be empty');
+            LoginPage.emailInput().shouldDisplayInputError('This field can not be empty');
+            LoginPage.passwordInputErrorContainer().shouldDisplayInputError('This field can not be empty');
         });
     })
 
@@ -75,7 +75,7 @@ describe('Negative scenarios', () => {
 
 
             LoginPage.loginForm().should('be.visible');
-            cy.assertFieldErrorIsDisplayed(LoginPage.emailInputErrorContainer(), 'Invalid email');
+            LoginPage.emailInput().shouldDisplayInputError('Invalid email');
         });
     })
 

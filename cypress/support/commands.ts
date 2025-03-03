@@ -27,42 +27,10 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
-import {Address} from '../data';
 import Chainable = Cypress.Chainable;
 import {SearchResults} from '../interfaces';
+import {Address} from "../data";
 
-
-Cypress.Commands.add('assertFieldErrorIsDisplayed', (errorContainer: Chainable<JQuery<HTMLElement>>, expectedErrorMsg: string): void => {
-    errorContainer.within(() => {
-        cy.get('span').should('be.visible').and('have.text', expectedErrorMsg);
-        cy.get('svg').should('be.visible');
-    });
-});
-
-Cypress.Commands.add('fillOutAddressForm', (address: Partial<Address>): void => {
-    if (address.fullname) {
-        cy.get('input[name="address[full_name]"]').type(address.fullname);
-    }
-    if (address.telephone) {
-        cy.get('input[name="address[telephone]"]').type(address.telephone);
-    }
-    if (address.address) {
-        cy.get('input[name="address[address_1]"]').type(address.address);
-    }
-    if (address.city) {
-        cy.get('input[name="address[city]"]').type(address.city);
-    }
-    if (address.country) {
-        cy.get('select[name="address[country]"]').select(address.country);
-
-        if (address.province) {
-            cy.get('select[name="address[province]"]').select(address.province);
-        }
-    }
-    if (address.postcode) {
-        cy.get('input[name="address[postcode]"]').type(address.postcode);
-    }
-});
 
 Cypress.Commands.add('getShippingAddresses', (): Chainable<Address[]> => {
     const addressesData: Address[] = [];
@@ -104,6 +72,18 @@ Cypress.Commands.add('getShippingAddresses', (): Chainable<Address[]> => {
     });
 });
 
+Cypress.Commands.add('shouldDisplayInputError', { prevSubject: true }, (subject: JQuery<HTMLElement>, expectedErrorMsg: string): void => {
+    // Find the error container relative to the input field
+    cy.wrap(subject)
+        .parents('.form-field-container')
+        .find('.field-error')
+        .within(() => {
+            cy.get('span').should('be.visible').and('have.text', expectedErrorMsg);
+            cy.get('svg').should('be.visible');
+        });
+});
+
+
 Cypress.Commands.add('filterProductsBySize', (sizes: string[]): void => {
     sizes.forEach(size => {
         cy.contains('span', 'Size').parent().next('.filter-option-list').contains('span', size).click();
@@ -138,6 +118,8 @@ Cypress.Commands.add('getSearchResults', (): Chainable<SearchResults[]> => {
         return products;
     });
 });
+
+
 
 
 

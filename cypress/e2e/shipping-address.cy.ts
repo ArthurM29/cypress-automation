@@ -1,37 +1,44 @@
 import {Address, user} from "../data";
 import {removeObjectKeys} from "../utils";
 import {faker} from '@faker-js/faker';
+import {LoginPage} from "../pages/LoginPage";
+import {MyAccountPage} from "../pages/MyAccountPage";
+import {Header} from "../pages/Header";
+import {AddressForm} from "../pages/AddressForm";
+import Chainable = Cypress.Chainable;
+
 
 beforeEach(() => {
-    cy.loginWithSession(user.email, user.password);
-    cy.visit('/account');
-    cy.get('a[href*="account"]').as('account-icon').click();
-    cy.contains('Add new address').click();
+    LoginPage.loginWithSession(user.email, user.password);
+    MyAccountPage.visit();
+    Header.visitMyAccount();
+    MyAccountPage.clickAddNewAddressButton();
 })
 
 
 describe('Required fields', () => {
     interface AddressFieldData {
         field: string;
-        locator: string;
+        emptyFormField: () => Chainable<JQuery<HTMLElement>>;
         expectedMessage: string;
     }
 
     const addressRequiredFields: AddressFieldData[] = [
-        {field: 'fullname', locator: 'input[name="address[full_name]"]', expectedMessage: 'Full name is required'},
-        {field: 'telephone', locator: 'input[name="address[telephone]"]', expectedMessage: 'Telephone is required'},
-        {field: 'address', locator: 'input[name="address[address_1]"]', expectedMessage: 'Address is required'},
-        {field: 'city', locator: 'input[name="address[city]"]', expectedMessage: 'City is required'},
-        {field: 'country', locator: 'select[name="address[country]"]', expectedMessage: 'Country is required'},
-        {field: 'province', locator: 'select[name="address[province]"]', expectedMessage: 'Province is required'},
-        {field: 'postcode', locator: 'input[name="address[postcode]"]', expectedMessage: 'Postcode is required'}
+        {field: 'fullname', emptyFormField: () => AddressForm.fullnameInput(), expectedMessage: 'Full name is required'},
+        {field: 'telephone', emptyFormField: () => AddressForm.telephoneInput(), expectedMessage: 'Telephone is required'},
+        {field: 'address', emptyFormField: () => AddressForm.addressInput(), expectedMessage: 'Address is required'},
+        {field: 'city', emptyFormField: () => AddressForm.cityInput(), expectedMessage: 'City is required'},
+        {field: 'country', emptyFormField: () => AddressForm.countryDropdown(), expectedMessage: 'Country is required'},
+        {field: 'province', emptyFormField: () => AddressForm.provinceDropdown(), expectedMessage: 'Province is required'},
+        {field: 'postcode', emptyFormField: () => AddressForm.postcodeInput(), expectedMessage: 'Postcode is required'}
     ];
 
-    addressRequiredFields.forEach(({field, locator, expectedMessage}) => {
+    addressRequiredFields.forEach(({field, emptyFormField, expectedMessage}) => {
         it(`should not allow to create an address without populating required field '${field}'`, () => {
-            cy.fillOutAddressForm(removeObjectKeys(user.address, [field]));
-            cy.contains('Save').click();
-            cy.assertFieldErrorIsDisplayed(locator, expectedMessage);
+            AddressForm.fillOutAddressForm(removeObjectKeys(user.address, [field]));
+            AddressForm.saveButton().click();
+
+            emptyFormField().shouldDisplayInputError(expectedMessage);
         });
     });
 });
@@ -42,12 +49,12 @@ describe('Cancel', () => {
         fullname: `${user.address.fullname}_${faker.string.alpha(5)}`
     };
 
-    it('should cancel address creation if user clicks \'Close\' after entering data', () => {
-        cy.fillOutAddressForm(expectedAddress);
-        cy.contains('Close').click();
+    it(`should cancel address creation if user clicks 'Close' after entering data`, () => {
+        AddressForm.fillOutAddressForm(expectedAddress);
+        AddressForm.closeButton().click();
 
-        cy.get('.modal').as('Edit Address screen').should('not.exist');
-        cy.get('.order-history-empty').should('have.text', 'You have no addresses saved');
+        AddressForm.editAddressForm().should('not.exist');
+        AddressForm.noAddressesSavedLabel().should('have.text', 'You have no addresses saved');
     });
 })
 
@@ -63,7 +70,7 @@ describe('Create new Address', () => {
     })
 
     it('should be able to create a new address with all populated fields stored correctly', () => {
-        cy.fillOutAddressForm(expectedAddress);
+        AddressForm.fillOutAddressForm(expectedAddress);
         cy.get('.button.primary').click();
 
         cy.get('.Toastify__toast-body').should('be.visible').and('have.text', 'Address has been saved successfully!');
