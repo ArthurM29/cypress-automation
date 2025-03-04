@@ -32,46 +32,6 @@ import {SearchResults} from '../interfaces';
 import {Address} from "../data";
 
 
-Cypress.Commands.add('getShippingAddresses', (): Chainable<Address[]> => {
-    const addressesData: Address[] = [];
-
-    return cy.get('.address__summary').each(($address) => {
-        let addressData = {} as Address;
-
-        return cy.wrap($address).within(() => {
-            cy.get('.full-name').invoke('text').then(fullname => {
-                addressData.fullname = fullname;
-            });
-
-            cy.get('.telephone').invoke('text').then(telephone => {
-                addressData.telephone = telephone;
-            });
-
-            cy.get('.city-province-postcode').within(() => {
-                cy.get('div').eq(0).invoke('text').then(postcodeCityTxt => {
-                    const [postcode, city] = postcodeCityTxt.split(',').map(value => value.trim());
-                    addressData.postcode = postcode;
-                    addressData.city = city;
-                });
-
-                cy.get('div').eq(1).invoke('text').then(provinceCountryTxt => {
-                    const [province, country] = provinceCountryTxt.split(',').map(value => value.trim());
-                    addressData.province = province;
-                    addressData.country = country;
-                });
-            });
-
-            cy.get('.address-one').invoke('text').then(address => {
-                addressData.address = address;
-            });
-        }).then(() => {
-            addressesData.push(addressData);
-        });
-    }).then(() => {
-        return addressesData;
-    });
-});
-
 Cypress.Commands.add('shouldDisplayInputError', { prevSubject: true }, (subject: JQuery<HTMLElement>, expectedErrorMsg: string): void => {
     // Find the error container relative to the input field
     cy.wrap(subject)

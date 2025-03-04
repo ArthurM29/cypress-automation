@@ -66,24 +66,19 @@ describe('Create new Address', () => {
 
     afterEach(() => {
         // delete created shipping address
-        cy.contains(expectedAddress.fullname).closest('.border.rounded').contains('Delete').click();
+        AddressForm.deleteShippingAddress(expectedAddress.fullname);
     })
 
-    it('should be able to create a new address with all populated fields stored correctly', () => {
+    it.only('should be able to create a new address with all populated fields stored correctly', () => {
         AddressForm.fillOutAddressForm(expectedAddress);
-        cy.get('.button.primary').click();
+        AddressForm.saveButton().click();
 
-        cy.get('.Toastify__toast-body').should('be.visible').and('have.text', 'Address has been saved successfully!');
-        cy.get('.Toastify__toast-body', {timeout: 10000}).should('not.exist');
+        AddressForm.confirmationToast().should('be.visible').and('have.text', 'Address has been saved successfully!');
+        AddressForm.confirmationToast({ timeout: 10000 }).should('not.exist');
 
-        cy.getShippingAddresses().then((shippingAddresses: Address[]) => {
-            cy.wrap(shippingAddresses).should('have.length', 1);
-            const createdAddress = shippingAddresses.find(address =>
-                address.fullname.toLowerCase() === expectedAddress.fullname.toLocaleLowerCase());
-
-            cy.wrap(createdAddress).should((address) => {
-                expect(address).to.deep.equal(expectedAddress);
-            });
+        MyAccountPage.getShippingAddresses().should('have.length', 1);
+        MyAccountPage.getShippingAddressByFullname(expectedAddress.fullname).then((address) => {
+            expect(address).to.deep.equal(expectedAddress);
         });
     });
 })

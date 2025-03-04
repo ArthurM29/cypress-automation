@@ -15,17 +15,6 @@ declare global {
             shouldDisplayInputError(expectedErrorMsg: string): Chainable<Subject>;
 
             /**
-             * Custom command to fetch addresses from the page.
-             * This command iterates over elements with the class '.address__summary',
-             * extracting details such as full name, telephone, address, city, postcode, province, and country,
-             * and collects them into an array of Address objects.
-             * @example cy.getAddresses().then((addresses) => {
-             *   // addresses is now an array of Address objects
-             * })
-             */
-            getShippingAddresses(): Chainable<Array<Address>>;
-
-            /**
              * Custom command to retrieve search results from the page.
              * This command fetches listings from the page and constructs an array of SearchResults,
              * each containing name, price, and thumbnail link of a product.

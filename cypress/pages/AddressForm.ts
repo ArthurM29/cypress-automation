@@ -14,6 +14,8 @@ export class AddressForm {
     static closeButton = (): Chainable<JQuery<HTMLSpanElement>> => cy.contains('Close');
     static editAddressForm = (): Chainable<JQuery<HTMLDivElement>> => cy.get('.modal');
     static noAddressesSavedLabel = (): Chainable<JQuery<HTMLDivElement>> => cy.get('.order-history-empty');
+    static confirmationToast = (options?: { timeout?: number }): Chainable<JQuery<HTMLDivElement>> =>
+        cy.get('.Toastify__toast-body', options);
 
     static fillOutAddressForm(address: Partial<Address>): void {
         if (address.fullname) {
@@ -38,6 +40,14 @@ export class AddressForm {
         if (address.postcode) {
             cy.get('input[name="address[postcode]"]').type(address.postcode);
         }
+    }
+
+    static getShippingAddress(fullname: string): Chainable<JQuery<HTMLDivElement>> {
+        return cy.contains(fullname).closest('.border.rounded');
+    }
+
+    static deleteShippingAddress(fullname: string): void {
+        AddressForm.getShippingAddress(fullname).contains('Delete').click();
     }
 
 }
