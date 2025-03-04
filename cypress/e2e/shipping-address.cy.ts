@@ -1,4 +1,4 @@
-import {Address, user} from "../data";
+import {user} from "../data";
 import {removeObjectKeys} from "../utils";
 import {faker} from '@faker-js/faker';
 import {LoginPage} from "../pages/LoginPage";
@@ -69,7 +69,7 @@ describe('Create new Address', () => {
         AddressForm.deleteShippingAddress(expectedAddress.fullname);
     })
 
-    it.only('should be able to create a new address with all populated fields stored correctly', () => {
+    it('should be able to create a new address with all populated fields stored correctly', () => {
         AddressForm.fillOutAddressForm(expectedAddress);
         AddressForm.saveButton().click();
 
